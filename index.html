@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document Upload</title>
+</head>
+<body>
+  <h1>Upload a Document</h1>
+  <input type="file" id="fileInput" />
+  <button onclick="uploadFile()">Upload</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) return alert("Please select a file");
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload?filename=' + encodeURIComponent(file.name), {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
