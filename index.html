@@ -10,22 +10,34 @@
   <pre id="result"></pre>
 
   <script>
-    async function uploadFile() {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
-      if (!file) return alert("Please select a file");
+async function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) return alert("Please select a file");
 
-      const formData = new FormData();
-      formData.append('file', file);
+  const formData = new FormData();
+  formData.append('file', file);
 
-      const response = await fetch('/api/upload?filename=' + encodeURIComponent(file.name), {
-        method: 'POST',
-        body: formData
-      });
+  try {
+    const response = await fetch('/api/upload?filename=' + encodeURIComponent(file.name), {
+      method: 'POST',
+      body: formData
+    });
 
-      const data = await response.json();
+    const text = await response.text();
+
+    try {
+      const data = JSON.parse(text);
       document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    } catch (jsonError) {
+      document.getElementById('result').textContent = "Non-JSON response: " + text;
     }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('result').textContent = 'Upload failed: ' + err.message;
+  }
+}
+
   </script>
 </body>
 </html>
