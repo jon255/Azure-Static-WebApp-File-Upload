@@ -57,6 +57,6 @@ module.exports = async function (context, req) {
 
   context.res = {
     status: 200,
-    body: result
+    body: { message: "Function was called successfully!" }
   };
 };
