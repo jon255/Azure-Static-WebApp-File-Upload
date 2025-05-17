@@ -45,19 +45,24 @@ module.exports = async function (context, req) {
 
   // Call Document Intelligence
   try {
-    const endpoint = process.env.FORM_RECOGNIZER_ENDPOINT;
-    const key = process.env.FORM_RECOGNIZER_KEY;
+    const { DocumentAnalysisClient, AzureKeyCredential } = require("@azure/ai-form-recognizer");
 
-    const response = await axios.post(
-      `${endpoint}/formrecognizer/documentModels/prebuilt-read:analyze?api-version=2023-07-31`,
-      { urlSource: fileUrl },
-      {
-        headers: {
-          'Ocp-Apim-Subscription-Key': key,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+const endpoint = process.env.DOCUMENT_INTELLIGENCE_ENDPOINT;
+const apiKey = process.env.DOCUMENT_INTELLIGENCE_API_KEY;
+
+const client = new DocumentAnalysisClient(endpoint, new AzureKeyCredential(apiKey));
+
+async function analyzeDocument(fileBuffer) {
+  try {
+    const poller = await client.beginAnalyzeDocument("prebuilt-document", fileBuffer);
+    const result = await poller.pollUntilDone();
+    return result;
+  } catch (error) {
+    console.error("Error calling Document Intelligence:", error);
+    throw error;
+  }
+}
+;
 
     const resultUrl = response.headers['operation-location'];
 
