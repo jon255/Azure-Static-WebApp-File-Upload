@@ -44,15 +44,20 @@ module.exports = async function (context, req) {
     const poller = await client.beginAnalyzeDocument("prebuilt-document", fileBuffer);
     const result = await poller.pollUntilDone();
 
-    context.res = {
-      status: 200,
-      body: result
-    };
+ context.res = {
+  status: 200,
+  headers: { "Content-Type": "application/json" },
+  body: result
+};
+
   } catch (err) {
     context.log('AI processing error:', err);
     context.res = {
       status: 500,
-      body: { error: 'Failed to process file with Document Intelligence', details: err.message }
+      headers: { "Content-Type": "application/json" },
+      body: { 
+      error: 'Failed to process file with Document Intelligence', 
+      details: err.message }
     };
   }
 };
