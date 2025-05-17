@@ -2,6 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "dependencies": {
-    "busboy": "^1.6.0"
+    "busboy": "^1.6.0",
+    "@azure/storage-blob": "^12.10.0"
   }
 }
