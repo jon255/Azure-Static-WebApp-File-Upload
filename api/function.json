@@ -1,5 +1,5 @@
 {
-  "bindings"; [
+  "bindings": [
     {
       "authLevel": "anonymous",
       "type": "httpTrigger",
