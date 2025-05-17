@@ -36,7 +36,7 @@ module.exports = async function (context, req) {
   });
 
   try {
-    const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AzureWebJobsStorage);
+    const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.BLOB_CONNECTION_STRING);
     const containerClient = blobServiceClient.getContainerClient('uploads'); // use your container name here
 
     const blockBlobClient = containerClient.getBlockBlobClient(fileName);
