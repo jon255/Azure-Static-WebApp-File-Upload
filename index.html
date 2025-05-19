@@ -1,43 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Documents Upload</title>
+  <title>Upload File</title>
 </head>
 <body>
-  <h1>Upload a Document</h1>
+  <h2>Upload a file</h2>
   <input type="file" id="fileInput" />
   <button onclick="uploadFile()">Upload</button>
-  <pre id="result"></pre>
+  <pre id="response"></pre>
 
   <script>
-async function uploadFile() {
-  const fileInput = document.getElementById('fileInput');
-  const file = fileInput.files[0];
-  if (!file) return alert("Please select a file");
+    async function uploadFile() {
+      const input = document.getElementById('fileInput');
+      const file = input.files[0];
+      if (!file) return alert("Please select a file.");
 
-  const formData = new FormData();
-  formData.append('file', file);
+      const formData = new FormData();
+      formData.append("file", file);
 
-  try {
-    const response = await fetch('/api/upload?filename=' + encodeURIComponent(file.name), {
-      method: 'POST',
-      body: formData
-    });
+      try {
+        const res = await fetch(`/api/upload?filename=${file.name}`, {
+          method: "POST",
+          body: formData
+        });
 
-    const text = await response.text();
-
-    try {
-      const data = JSON.parse(text);
-      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-    } catch (jsonError) {
-      document.getElementById('result').textContent = "Non-JSON response: " + text;
+        const result = await res.json();
+        document.getElementById("response").textContent = JSON.stringify(result, null, 2);
+      } catch (err) {
+        document.getElementById("response").textContent = "Upload failed: " + err.message;
+      }
     }
-  } catch (err) {
-    console.error(err);
-    document.getElementById('result').textContent = 'Upload failed: ' + err.message;
-  }
-}
-
   </script>
 </body>
 </html>
