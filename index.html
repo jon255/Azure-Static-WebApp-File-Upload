@@ -1,35 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Upload File</title>
-</head>
-<body>
-  <h2>Upload a file</h2>
-  <input type="file" id="fileInput" />
-  <button onclick="uploadFile()">Upload</button>
-  <pre id="response"></pre>
+<input type="file" id="fileUpload">
+<button onclick="uploadFile()">Upload</button>
 
-  <script>
-    async function uploadFile() {
-      const input = document.getElementById('fileInput');
-      const file = input.files[0];
-      if (!file) return alert("Please select a file.");
+<script>
+async function uploadFile() {
+  const file = document.getElementById('fileUpload').files[0];
+  const formData = new FormData();
+  formData.append("file", file);
 
-      const formData = new FormData();
-      formData.append("file", file);
+  const response = await fetch("/api/upload", {
+    method: "POST",
+    body: formData
+  });
 
-      try {
-        const res = await fetch(`/api/upload?filename=${file.name}`, {
-          method: "POST",
-          body: formData
-        });
-
-        const result = await res.json();
-        document.getElementById("response").textContent = JSON.stringify(result, null, 2);
-      } catch (err) {
-        document.getElementById("response").textContent = "Upload failed: " + err.message;
-      }
-    }
-  </script>
-</body>
-</html>
+  const result = await response.json();
+  alert("Upload complete. Review status: " + result.status);
+}
+</script>
